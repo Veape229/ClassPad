@@ -35,7 +35,7 @@
                     <i data-lucide="school" class="w-10 h-10 text-white"></i>
                 </div>
                 <h1 class="text-2xl font-bold text-white mb-1">Scratch 课堂助手</h1>
-                <p class="text-slate-400 text-sm">扁平化·自动同步版</p>
+                <p class="text-slate-400 text-sm">V2.3.1</p>
             </div>
             
             <div class="flex border-b border-slate-700">
@@ -1514,178 +1514,178 @@
         }
 
         function renderProfileView(container) {
-                    const student = state.students.find(s => s.id === state.currentProfileId) || state.students[0];
-                    if (!student) {
-                        container.innerHTML = `<div class="h-full flex items-center justify-center text-slate-500">该班级暂无学生</div>`;
-                        return;
-                    }
-                    state.currentProfileId = student.id; 
+            const student = state.students.find(s => s.id === state.currentProfileId) || state.students[0];
+            if (!student) {
+                container.innerHTML = `<div class="h-full flex items-center justify-center text-slate-500">该班级暂无学生</div>`;
+                return;
+            }
+            state.currentProfileId = student.id; 
         
-                    const collections = student.collections || [];
-                    const unlocked = student.unlockedSkills || [];
-                    const mastered = student.masteredSkills || [];
-                    const requiredXp = getRequiredXp(student.level);
-                    const xpPercent = Math.min(100, (student.xp / requiredXp) * 100);
+            const collections = student.collections || [];
+            const unlocked = student.unlockedSkills || [];
+            const mastered = student.masteredSkills || [];
+            const requiredXp = getRequiredXp(student.level);
+            const xpPercent = Math.min(100, (student.xp / requiredXp) * 100);
         
-                    // 左侧学生列表 (仅教师可见)
-                    let listHtml = '';
-                    if (state.userRole === 'teacher') {
-                        listHtml = state.students.map(s => `
-                            <button onclick="state.currentProfileId='${s.id}'; renderAll()" class="w-full p-2 md:p-3 rounded-xl flex items-center gap-3 transition-colors ${state.currentProfileId === s.id ? 'bg-cyan-900/40 border border-cyan-500/50' : 'hover:bg-slate-800 border border-transparent'}">
-                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-slate-700 flex items-center justify-center text-xl md:text-2xl relative shrink-0">
-                                    ${s.avatar}
-                                    <div class="absolute -top-1 -right-1 w-3 h-3 md:w-4 md:h-4 bg-indigo-600 rounded-full text-[8px] flex items-center justify-center text-white border border-slate-700">${s.level}</div>
-                                </div>
-                                <div class="text-left overflow-hidden">
-                                    <div class="font-bold truncate text-sm md:text-base ${state.currentProfileId === s.id ? 'text-cyan-300' : 'text-slate-300'}">${s.name}</div>
-                                    <div class="text-xs text-slate-500 font-mono">$${s.coins}</div>
-                                </div>
-                            </button>
-                        `).join('');
-                    } else {
-                         listHtml = `
-                            <div class="p-4 text-center text-slate-500">
-                                <i data-lucide="user" class="w-12 h-12 mx-auto mb-2 opacity-50"></i>
-                                <div class="text-sm">我的档案</div>
-                                <div class="text-xs mt-1 text-slate-600">ID: ${student.studentId || '未知'}</div>
-                            </div>
-                         `;
-                    }
+            // 左侧学生列表 (仅教师可见)
+            let listHtml = '';
+            if (state.userRole === 'teacher') {
+                listHtml = state.students.map(s => `
+                    <button onclick="state.currentProfileId='${s.id}'; renderAll()" class="w-full p-2 md:p-3 rounded-xl flex items-center gap-3 transition-colors ${state.currentProfileId === s.id ? 'bg-cyan-900/40 border border-cyan-500/50' : 'hover:bg-slate-800 border border-transparent'}">
+                        <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-slate-700 flex items-center justify-center text-xl md:text-2xl relative shrink-0">
+                            ${s.avatar}
+                            <div class="absolute -top-1 -right-1 w-3 h-3 md:w-4 md:h-4 bg-indigo-600 rounded-full text-[8px] flex items-center justify-center text-white border border-slate-700">${s.level}</div>
+                        </div>
+                        <div class="text-left overflow-hidden">
+                            <div class="font-bold truncate text-sm md:text-base ${state.currentProfileId === s.id ? 'text-cyan-300' : 'text-slate-300'}">${s.name}</div>
+                            <div class="text-xs text-slate-500 font-mono">$${s.coins}</div>
+                        </div>
+                    </button>
+                `).join('');
+            } else {
+                    listHtml = `
+                    <div class="p-4 text-center text-slate-500">
+                        <i data-lucide="user" class="w-12 h-12 mx-auto mb-2 opacity-50"></i>
+                        <div class="text-sm">我的档案</div>
+                        <div class="text-xs mt-1 text-slate-600">ID: ${student.studentId || '未知'}</div>
+                    </div>
+                    `;
+            }
         
-                    let rightContentHtml = '';
-                    if (state.profileTab === 'skills') {
-                        // 教师分发按钮
-                        const assignBtn = state.userRole === 'teacher' ? 
-                            `<div class="flex justify-end mb-4"><button onclick="openAssignModal('${student.id}')" class="bg-green-600 hover:bg-green-500 text-white text-xs px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 shadow-lg ml-auto"><i data-lucide="plus" class="w-3 h-3"></i> 分发新图鉴</button></div>` : '';
+            let rightContentHtml = '';
+            if (state.profileTab === 'skills') {
+                // 教师分发按钮
+                const assignBtn = state.userRole === 'teacher' ? 
+                    `<div class="flex justify-end mb-4"><button onclick="openAssignModal('${student.id}')" class="bg-green-600 hover:bg-green-500 text-white text-xs px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 shadow-lg ml-auto"><i data-lucide="plus" class="w-3 h-3"></i> 分发新图鉴</button></div>` : '';
         
-                        let collectionsHtml = '';
-                        if (collections.length === 0) {
-                            collectionsHtml = `<div class="text-center text-slate-500 py-10 bg-slate-800/30 rounded-2xl border border-slate-700/50">暂无图鉴，请老师分发。</div>`;
-                        } else {
-                            // 渲染扁平化的图鉴列表
-                            collectionsHtml = collections.map((col, colIndex) => {
-                                const totalSkills = col.skills ? col.skills.length : 0;
-                                const masteredCount = col.skills ? col.skills.filter(s => mastered.includes(s.id)).length : 0;
-                                
-                                const delColBtn = state.userRole === 'teacher' ? 
-                                    `<button onclick="removeCollectionFromStudent('${student.id}', '${col.id}')" class="p-1.5 text-slate-500 hover:text-red-400 hover:bg-slate-700/50 rounded-lg transition-colors ml-1" title="移除此图鉴"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` 
-                                    : '';
+                let collectionsHtml = '';
+                if (collections.length === 0) {
+                    collectionsHtml = `<div class="text-center text-slate-500 py-10 bg-slate-800/30 rounded-2xl border border-slate-700/50">暂无图鉴，请老师分发。</div>`;
+                } else {
+                    // 渲染扁平化的图鉴列表
+                    collectionsHtml = collections.map((col, colIndex) => {
+                        const totalSkills = col.skills ? col.skills.length : 0;
+                        const masteredCount = col.skills ? col.skills.filter(s => mastered.includes(s.id)).length : 0;
+                        
+                        const delColBtn = state.userRole === 'teacher' ? 
+                            `<button onclick="removeCollectionFromStudent('${student.id}', '${col.id}')" class="p-1.5 text-slate-500 hover:text-red-400 hover:bg-slate-700/50 rounded-lg transition-colors ml-1" title="移除此图鉴"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` 
+                            : '';
         
-                                // 排序按钮
-                                let sortBtns = '';
-                                if (collections.length > 1) {
-                                    const upBtn = colIndex > 0 
-                                        ? `<button onclick="moveCollection('${student.id}', ${colIndex}, -1)" class="p-1.5 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg" title="上移"><i data-lucide="arrow-up" class="w-4 h-4"></i></button>`
-                                        : `<div class="w-7"></div>`;
-                                    
-                                    const downBtn = colIndex < collections.length - 1
-                                        ? `<button onclick="moveCollection('${student.id}', ${colIndex}, 1)" class="p-1.5 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg" title="下移"><i data-lucide="arrow-down" class="w-4 h-4"></i></button>`
-                                        : `<div class="w-7"></div>`;
-                                    
-                                    sortBtns = `<div class="flex items-center gap-0.5 mr-2 border-r border-slate-700 pr-2">${upBtn}${downBtn}</div>`;
-                                }
-        
-                                const skillsHtml = (col.skills || []).map((skill, idx) => {
-                                    const isUnlocked = unlocked.includes(skill.id);
-                                    const isMastered = mastered.includes(skill.id);
-                                    const sReward = skill.coins || SKILL_REWARD;
-                                    let statusIcon, statusClass;
-                                    if(isMastered) {
-                                        statusIcon = 'check-check'; statusClass = 'bg-cyan-900/50 text-cyan-400 border-cyan-500/50';
-                                    } else if(isUnlocked) {
-                                        statusIcon = 'hourglass'; statusClass = 'bg-amber-900/50 text-amber-400 border-amber-500/50 animate-pulse-glow cursor-pointer';
-                                    } else {
-                                        statusIcon = 'lock'; statusClass = 'bg-slate-800 text-slate-600 border-slate-700 cursor-pointer hover:border-slate-500';
-                                    }
-                                    const isTeacher = state.userRole === 'teacher';
-                                    // 传递的第三个参数现在是 col.id (图鉴ID)，因为不再有 collection 分支概念
-                                    const clickAction = (isTeacher && !isMastered) ? `onclick="unlockSkill('${student.id}', '${skill.id}', '${col.id}')"` : (isTeacher ? '' : 'style="cursor: default"');
-                                    if (!isTeacher && !isMastered && !isUnlocked) statusClass = 'bg-slate-800 text-slate-600 border-slate-700 opacity-60';
-        
-                                    return `
-                                        <div ${clickAction} class="flex flex-col items-center p-2 md:p-3 rounded-xl border ${statusClass} transition-all relative group h-24 justify-center">
-                                            <div class="mb-1"><i data-lucide="${statusIcon}" class="w-5 h-5 md:w-6 md:h-6"></i></div>
-                                            <div class="text-[10px] md:text-xs font-bold text-center leading-tight mb-1 line-clamp-2">${skill.name}</div>
-                                            ${!isMastered ? `<div class="text-[9px] md:text-[10px] bg-slate-900/50 px-1 md:px-1.5 py-0.5 rounded text-slate-400">+${sReward}</div>` : ''}
-                                        </div>
-                                    `;
-                                }).join('');
-        
-                                return `
-                                    <div class="mb-4 md:mb-6 bg-slate-800/50 border border-slate-700 rounded-2xl overflow-hidden transition-all duration-300">
-                                        <div class="p-3 md:p-4 bg-slate-800 border-b border-slate-700 flex justify-between items-center">
-                                            <div class="overflow-hidden mr-2 flex-1">
-                                                <div class="flex items-center gap-2">
-                                                    <h3 class="font-bold text-base md:text-lg text-slate-200 truncate">${col.name}</h3>
-                                                </div>
-                                                <div class="text-[10px] md:text-xs text-slate-500 mt-1 truncate">奖励: <span class="text-yellow-500 font-mono">+${col.bonusCoins || 500}</span> <span class="text-purple-400 font-mono">+${col.bonusXp || 200}XP</span></div>
-                                            </div>
-                                            <div class="text-right shrink-0 flex items-center">
-                                                ${sortBtns}
-                                                <div class="text-xl md:text-2xl font-black text-slate-600 font-mono mr-2">${masteredCount}<span class="text-xs md:text-sm text-slate-600">/${totalSkills}</span></div>
-                                                ${delColBtn}
-                                            </div>
-                                        </div>
-                                        <div class="p-3 md:p-4">
-                                            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 md:gap-3">${skillsHtml}</div>
-                                        </div>
-                                    </div>
-                                `;
-                            }).join('');
+                        // 排序按钮
+                        let sortBtns = '';
+                        if (collections.length > 1) {
+                            const upBtn = colIndex > 0 
+                                ? `<button onclick="moveCollection('${student.id}', ${colIndex}, -1)" class="p-1.5 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg" title="上移"><i data-lucide="arrow-up" class="w-4 h-4"></i></button>`
+                                : `<div class="w-7"></div>`;
+                            
+                            const downBtn = colIndex < collections.length - 1
+                                ? `<button onclick="moveCollection('${student.id}', ${colIndex}, 1)" class="p-1.5 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg" title="下移"><i data-lucide="arrow-down" class="w-4 h-4"></i></button>`
+                                : `<div class="w-7"></div>`;
+                            
+                            sortBtns = `<div class="flex items-center gap-0.5 mr-2 border-r border-slate-700 pr-2">${upBtn}${downBtn}</div>`;
                         }
         
-                        rightContentHtml = `<div class="max-w-3xl mx-auto md:pl-4 pb-20">${assignBtn}${collectionsHtml}</div>`;
-                    } else {
-                        const historyHtml = (student.history && student.history.length > 0) ? student.history.map(h => `
-                            <div class="flex items-center justify-between p-3 md:p-4 bg-slate-800/50 rounded-xl border border-slate-700">
-                                <div class="flex items-center gap-3 md:gap-4 overflow-hidden mr-2">
-                                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center shrink-0 ${h.amount > 0 ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'}"><i data-lucide="${h.amount > 0 ? 'plus' : 'minus'}" class="w-4 h-4 md:w-5 md:h-5"></i></div>
-                                    <div class="overflow-hidden"><div class="font-bold text-white text-sm md:text-base truncate">${h.reason}</div><div class="text-xs text-slate-500">${h.date}</div></div>
+                        const skillsHtml = (col.skills || []).map((skill, idx) => {
+                            const isUnlocked = unlocked.includes(skill.id);
+                            const isMastered = mastered.includes(skill.id);
+                            const sReward = skill.coins || SKILL_REWARD;
+                            let statusIcon, statusClass;
+                            if(isMastered) {
+                                statusIcon = 'check-check'; statusClass = 'bg-cyan-900/50 text-cyan-400 border-cyan-500/50';
+                            } else if(isUnlocked) {
+                                statusIcon = 'hourglass'; statusClass = 'bg-amber-900/50 text-amber-400 border-amber-500/50 animate-pulse-glow cursor-pointer';
+                            } else {
+                                statusIcon = 'lock'; statusClass = 'bg-slate-800 text-slate-600 border-slate-700 cursor-pointer hover:border-slate-500';
+                            }
+                            const isTeacher = state.userRole === 'teacher';
+                            // 传递的第三个参数现在是 col.id (图鉴ID)，因为不再有 collection 分支概念
+                            const clickAction = (isTeacher && !isMastered) ? `onclick="unlockSkill('${student.id}', '${skill.id}', '${col.id}')"` : (isTeacher ? '' : 'style="cursor: default"');
+                            if (!isTeacher && !isMastered && !isUnlocked) statusClass = 'bg-slate-800 text-slate-600 border-slate-700 opacity-60';
+        
+                            return `
+                                <div ${clickAction} class="flex flex-col items-center p-2 md:p-3 rounded-xl border ${statusClass} transition-all relative group h-24 justify-center">
+                                    <div class="mb-1"><i data-lucide="${statusIcon}" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                                    <div class="text-[10px] md:text-xs font-bold text-center leading-tight mb-1 line-clamp-2">${skill.name}</div>
+                                    ${!isMastered ? `<div class="text-[9px] md:text-[10px] bg-slate-900/50 px-1 md:px-1.5 py-0.5 rounded text-slate-400">+${sReward}</div>` : ''}
                                 </div>
-                                <div class="text-right shrink-0"><div class="font-mono font-bold text-base md:text-lg ${h.amount > 0 ? 'text-green-400' : 'text-red-400'}">${h.amount > 0 ? '+' : ''}${h.amount}</div><div class="text-xs text-slate-500">余额: ${h.balance}</div></div>
-                            </div>`).join('') : `<div class="text-center text-slate-500 py-10">暂无记录</div>`;
-                        rightContentHtml = `<div class="space-y-2 pb-20">${historyHtml}</div>`;
-                    }
+                            `;
+                        }).join('');
         
-                    const editBtn = state.userRole === 'teacher' ? `<button onclick="openCoinEditModal('${student.id}')" class="p-1.5 md:p-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 transition-colors"><i data-lucide="pencil" class="w-4 h-4 md:w-5 md:h-5"></i></button>` : '';
-        
-                    container.innerHTML = `
-                        <div class="h-full flex flex-col md:flex-row gap-4 md:gap-6 animate-in fade-in">
-                            <div class="w-full md:w-64 bg-slate-800 rounded-2xl border border-slate-700 flex flex-col overflow-hidden shrink-0 h-48 md:h-auto">
-                                <div class="p-3 md:p-4 bg-slate-800/80 border-b border-slate-700 font-bold text-slate-400 text-sm tracking-wider uppercase">学生列表</div>
-                                <div class="flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar">${listHtml}</div>
-                            </div>
-                            <div class="flex-1 flex flex-col gap-4 md:gap-6 overflow-hidden">
-                                <div class="bg-gradient-to-r from-slate-800 to-slate-800/50 p-4 md:p-6 rounded-2xl border border-slate-700 flex items-center justify-between shadow-lg relative overflow-hidden shrink-0">
-                                    <div class="flex items-center gap-4 md:gap-6 relative z-10">
-                                        <div class="w-16 h-16 md:w-24 md:h-24 rounded-full bg-slate-700 border-4 border-slate-600 flex items-center justify-center text-4xl md:text-6xl shadow-xl shrink-0">${student.avatar}</div>
-                                        <div class="overflow-hidden">
-                                            <div class="flex items-center gap-2 md:gap-3 mb-1 md:mb-2">
-                                                <h1 class="text-2xl md:text-4xl font-black text-white truncate max-w-[150px] md:max-w-xs">${student.name}</h1>
-                                                <div class="bg-indigo-600 px-2 py-0.5 md:px-3 md:py-1 rounded-lg text-white font-bold text-xs md:text-lg shadow border border-indigo-400 shrink-0">Lv.${student.level}</div>
-                                            </div>
-                                            <div class="w-32 md:w-64">
-                                                <div class="flex justify-between text-xs text-indigo-300 mb-1 font-bold"><span>XP</span><span>${student.xp} / ${requiredXp}</span></div>
-                                                <div class="w-full bg-slate-900 h-2 md:h-3 rounded-full overflow-hidden border border-slate-600"><div class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]" style="width: ${xpPercent}%"></div></div>
-                                            </div>
+                        return `
+                            <div class="mb-4 md:mb-6 bg-slate-800/50 border border-slate-700 rounded-2xl overflow-hidden transition-all duration-300">
+                                <div class="p-3 md:p-4 bg-slate-800 border-b border-slate-700 flex justify-between items-center">
+                                    <div class="overflow-hidden mr-2 flex-1">
+                                        <div class="flex items-center gap-2">
+                                            <h3 class="font-bold text-base md:text-lg text-slate-200 truncate">${col.name}</h3>
                                         </div>
+                                        <div class="text-[10px] md:text-xs text-slate-500 mt-1 truncate">奖励: <span class="text-yellow-500 font-mono">+${col.bonusCoins || 500}</span> <span class="text-purple-400 font-mono">+${col.bonusXp || 200}XP</span></div>
                                     </div>
-                                    <div class="text-right relative z-10 pl-2">
-                                        <div class="text-xs md:text-sm text-slate-400 font-bold uppercase tracking-widest mb-1">金币余额</div>
-                                        <div class="flex items-center justify-end gap-2 md:gap-3">
-                                            <div class="text-3xl md:text-6xl font-mono font-black text-yellow-400 drop-shadow-md flex items-center gap-1 md:gap-2"><i data-lucide="coins" class="w-6 h-6 md:w-10 md:h-10 text-yellow-500"></i> ${student.coins}</div>
-                                            ${editBtn}
-                                        </div>
+                                    <div class="text-right shrink-0 flex items-center">
+                                        ${sortBtns}
+                                        <div class="text-xl md:text-2xl font-black text-slate-600 font-mono mr-2">${masteredCount}<span class="text-xs md:text-sm text-slate-600">/${totalSkills}</span></div>
+                                        ${delColBtn}
                                     </div>
                                 </div>
-                                <div class="flex border-b border-slate-700 shrink-0 overflow-x-auto">
-                                    <button onclick="state.profileTab='skills'; renderAll()" class="px-4 md:px-6 py-2 md:py-3 font-bold transition-colors border-b-2 whitespace-nowrap ${state.profileTab === 'skills' ? 'text-cyan-400 border-cyan-500' : 'text-slate-500 border-transparent hover:text-slate-300'}"><i data-lucide="network" class="w-4 h-4 inline mr-2"></i> 技能图鉴</button>
-                                    <button onclick="state.profileTab='history'; renderAll()" class="px-4 md:px-6 py-2 md:py-3 font-bold transition-colors border-b-2 whitespace-nowrap ${state.profileTab === 'history' ? 'text-amber-400 border-amber-500' : 'text-slate-500 border-transparent hover:text-slate-300'}"><i data-lucide="scroll-text" class="w-4 h-4 inline mr-2"></i> 变动记录</button>
+                                <div class="p-3 md:p-4">
+                                    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 md:gap-3">${skillsHtml}</div>
                                 </div>
-                                <div id="profile-content-area" class="flex-1 bg-slate-800/30 rounded-b-2xl border-x border-b border-slate-700/50 p-4 md:p-8 overflow-y-auto custom-scrollbar relative">${rightContentHtml}</div>
                             </div>
-                        </div>`;
+                        `;
+                    }).join('');
                 }
+        
+                rightContentHtml = `<div class="max-w-3xl mx-auto md:pl-4 pb-20">${assignBtn}${collectionsHtml}</div>`;
+            } else {
+                const historyHtml = (student.history && student.history.length > 0) ? student.history.map(h => `
+                    <div class="flex items-center justify-between p-3 md:p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+                        <div class="flex items-center gap-3 md:gap-4 overflow-hidden mr-2">
+                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center shrink-0 ${h.amount > 0 ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'}"><i data-lucide="${h.amount > 0 ? 'plus' : 'minus'}" class="w-4 h-4 md:w-5 md:h-5"></i></div>
+                            <div class="overflow-hidden"><div class="font-bold text-white text-sm md:text-base truncate">${h.reason}</div><div class="text-xs text-slate-500">${h.date}</div></div>
+                        </div>
+                        <div class="text-right shrink-0"><div class="font-mono font-bold text-base md:text-lg ${h.amount > 0 ? 'text-green-400' : 'text-red-400'}">${h.amount > 0 ? '+' : ''}${h.amount}</div><div class="text-xs text-slate-500">余额: ${h.balance}</div></div>
+                    </div>`).join('') : `<div class="text-center text-slate-500 py-10">暂无记录</div>`;
+                rightContentHtml = `<div class="space-y-2 pb-20">${historyHtml}</div>`;
+            }
+        
+            const editBtn = state.userRole === 'teacher' ? `<button onclick="openCoinEditModal('${student.id}')" class="p-1.5 md:p-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 transition-colors"><i data-lucide="pencil" class="w-4 h-4 md:w-5 md:h-5"></i></button>` : '';
+        
+            container.innerHTML = `
+                <div class="h-full flex flex-col md:flex-row gap-4 md:gap-6 animate-in fade-in">
+                    <div class="${state.userRole === 'student' ? 'hidden md:flex' : 'flex'} flex-col w-full md:w-64 bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden shrink-0 h-48 md:h-auto">
+                        <div class="p-3 md:p-4 bg-slate-800/80 border-b border-slate-700 font-bold text-slate-400 text-sm tracking-wider uppercase">学生列表</div>
+                        <div class="flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar">${listHtml}</div>
+                    </div>
+                    <div class="flex-1 flex flex-col gap-4 md:gap-6 overflow-hidden">
+                        <div class="bg-gradient-to-r from-slate-800 to-slate-800/50 p-4 md:p-6 rounded-2xl border border-slate-700 flex items-center justify-between shadow-lg relative overflow-hidden shrink-0">
+                            <div class="flex items-center gap-4 md:gap-6 relative z-10">
+                                <div class="w-16 h-16 md:w-24 md:h-24 rounded-full bg-slate-700 border-4 border-slate-600 flex items-center justify-center text-4xl md:text-6xl shadow-xl shrink-0">${student.avatar}</div>
+                                <div class="overflow-hidden">
+                                    <div class="flex items-center gap-2 md:gap-3 mb-1 md:mb-2">
+                                        <h1 class="text-2xl md:text-4xl font-black text-white truncate max-w-[150px] md:max-w-xs">${student.name}</h1>
+                                        <div class="bg-indigo-600 px-2 py-0.5 md:px-3 md:py-1 rounded-lg text-white font-bold text-xs md:text-lg shadow border border-indigo-400 shrink-0">Lv.${student.level}</div>
+                                    </div>
+                                    <div class="w-32 md:w-64">
+                                        <div class="flex justify-between text-xs text-indigo-300 mb-1 font-bold"><span>XP</span><span>${student.xp} / ${requiredXp}</span></div>
+                                        <div class="w-full bg-slate-900 h-2 md:h-3 rounded-full overflow-hidden border border-slate-600"><div class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]" style="width: ${xpPercent}%"></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-right relative z-10 pl-2">
+                                <div class="text-xs md:text-sm text-slate-400 font-bold uppercase tracking-widest mb-1">金币余额</div>
+                                <div class="flex items-center justify-end gap-2 md:gap-3">
+                                    <div class="text-3xl md:text-6xl font-mono font-black text-yellow-400 drop-shadow-md flex items-center gap-1 md:gap-2"><i data-lucide="coins" class="w-6 h-6 md:w-10 md:h-10 text-yellow-500"></i> ${student.coins}</div>
+                                    ${editBtn}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex border-b border-slate-700 shrink-0 overflow-x-auto">
+                            <button onclick="state.profileTab='skills'; renderAll()" class="px-4 md:px-6 py-2 md:py-3 font-bold transition-colors border-b-2 whitespace-nowrap ${state.profileTab === 'skills' ? 'text-cyan-400 border-cyan-500' : 'text-slate-500 border-transparent hover:text-slate-300'}"><i data-lucide="network" class="w-4 h-4 inline mr-2"></i> 技能图鉴</button>
+                            <button onclick="state.profileTab='history'; renderAll()" class="px-4 md:px-6 py-2 md:py-3 font-bold transition-colors border-b-2 whitespace-nowrap ${state.profileTab === 'history' ? 'text-amber-400 border-amber-500' : 'text-slate-500 border-transparent hover:text-slate-300'}"><i data-lucide="scroll-text" class="w-4 h-4 inline mr-2"></i> 变动记录</button>
+                        </div>
+                        <div id="profile-content-area" class="flex-1 bg-slate-800/30 rounded-b-2xl border-x border-b border-slate-700/50 p-4 md:p-8 overflow-y-auto custom-scrollbar relative">${rightContentHtml}</div>
+                    </div>
+                </div>`;
+        }
 
         function renderManageView(container) {
             if (state.userRole !== 'teacher') return;
